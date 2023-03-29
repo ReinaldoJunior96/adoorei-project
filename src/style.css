@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 
 @tailwind base;
@@ -8,6 +9,9 @@
 @layer utilities {
     .bebas-style{
         font-family: 'Bebas Neue', cursive;
+    }
+    .montserrat-style{
+        font-family: 'Montserrat', sans-serif;
     }
 }
 
