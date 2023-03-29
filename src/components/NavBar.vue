@@ -1,16 +1,23 @@
 <template>
-  <nav class=" shadow relative ">
-    <article class="py-5 px-3 tablet:px-0 bg-white ">
+  <nav class=" shadow z-10 relative relative ">
+    <article class="py-5 px-3 tablet:px-0 bg-white " :class="{' brightness-50': this.$store.state.visualizacaoCarrinho }">
       <section class="flex justify-between tablet:justify-center gap-3 items-center  w-full">
         <div class="flex justify-center order-2 items-center gap-14">
-          <div class="flex items-center gap-2 ">
-            <i class="fa-solid fa-store text-primary fa-2x"></i>
-            <h2 class="font-medium bebas-style texto-logo mt-2">Dev Store</h2>
-          </div>
+          <router-link  to="/">
+            <div class="flex items-center gap-2 ">
+
+              <i class="fa-solid fa-store text-primary fa-2x"></i>
+              <h2 class="font-medium bebas-style texto-logo text-gray-600 mt-2">Dev Store</h2>
+
+
+            </div>
+          </router-link>
           <ul class="itens-menu hidden items-center tablet:flex gap-10 text-secondary font-medium">
-            <li class="cursor-pointer" v-for="c in this.categoriasArr" :key="c">{{ c }}</li>
+            <li class="cursor-pointer text-gray-600" v-for="c in this.categoriasArr" :key="c">
+              <router-link :to="`/categorias/${c}`">{{ c }}</router-link>
+            </li>
             <li class="hidden tablet:block">
-              <div>
+              <div class="relative">
                 <label for="search"
                        class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                 <div class="relative">
@@ -21,9 +28,24 @@
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                   </div>
-                  <input type="search"
+                  <input type="search" v-model="inputBusca"
                          class="search-input block w-full p-2 pl-10 text-sm text-secondary border border-primary rounded-lg bg-white"
                          placeholder="Buscar produto..." required>
+                </div>
+                <div v-if="this.inputBusca !== '' " class="absolute top-10 bg-white w-full shadow-2xl"
+                     style="z-index: 999">
+                  <ul class="flex flex-col gap-2  pt-3 ">
+
+                    <li class="border-b border-primary px-3 cursor-pointer hover:bg-primary hover:text-white"
+                        v-for="search in this.buscarProdutos">
+                      <router-link :to="`/produto/${search.id}`">
+                        {{ search.title }}
+                      </router-link>
+                    </li>
+
+
+                  </ul>
+
                 </div>
               </div>
             </li>
@@ -37,7 +59,7 @@
         </div>
       </section>
       <section class="block tablet:hidden w-full ">
-        <div>
+        <div class="relative">
           <label for="search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -47,9 +69,24 @@
                       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
             </div>
-            <input type="search"
+            <input type="search" v-model="inputBusca"
                    class="search-input block w-full p-2 pl-10 text-sm text-secondary border border-primary rounded-lg bg-white"
                    placeholder="Buscar produto..." required>
+          </div>
+          <div v-if="this.inputBusca !== '' " class="absolute top-10 bg-white w-full shadow-2xl"
+               style="z-index: 999">
+            <ul class="flex flex-col gap-2  pt-3 ">
+
+              <li class="border-b border-primary px-3 cursor-pointer hover:bg-primary hover:text-white"
+                  v-for="search in this.buscarProdutos">
+                <router-link :to="`/produto/${search.id}`">
+                  {{ search.title }}
+                </router-link>
+              </li>
+
+
+            </ul>
+
           </div>
         </div>
       </section>
@@ -63,9 +100,9 @@
           <i class="fa-solid fa-user"></i> Olá, visitante!
         </li>
         <li class="font-medium border-b text-lg" v-for="c in this.categorias" :key="c">
-          <a href="">
+          <router-link :to="`/categorias/${c}`">
             {{ c }}
-          </a>
+          </router-link>
 
 
         </li>
@@ -83,24 +120,27 @@ export default {
   name: 'navbar',
   data() {
     return {
-      categorias: null
+      categorias: null,
+      inputBusca: '',
     }
   },
   methods: {
     menuMobile() {
-      //this.$store.commit('verCarrinho')
-      if (this.$store.state.visualizacaoCarrinho) {
-        this.$store.commit('verCarrinho')
-      }
-      $('#sidemenu').slideToggle("fast", function () {
+      const isCarrinhoVisible = this.$store.state.visualizacaoCarrinho;
+      const sideMenu = $('#sidemenu');
 
+      if (isCarrinhoVisible) {
+        this.$store.commit('verCarrinho');
+      }
+
+      sideMenu.slideToggle("fast", function () {
         $(this).animate({}, 500);
-      })
+      });
     },
     verCarrinho() {
       const sideMenu = $('#sidemenu')
       if (sideMenu.is(':visible')) {
-       sideMenu.hide()
+        sideMenu.hide()
       }
       this.$store.commit('verCarrinho')
     }
@@ -108,20 +148,28 @@ export default {
   computed: {
     categoriasArr() {
       return this.categorias
-    }
+    },
+    buscarProdutos() {
+      const termosBusca = this.inputBusca.toLowerCase().split(' ');
+      if (termosBusca.length === 0 || termosBusca[0] === '') {
+        return this.$store.state.produtos;
+      }
+
+      return this.$store.state.produtos.filter((produto) => {
+        const tituloProduto = produto.title.toLowerCase();
+        return termosBusca.every(termo => tituloProduto.includes(termo));
+      });
+    },
   },
-  mounted() {
+  mounted: async function () {
     $('#sidemenu').hide()
-    const self = this
-    axios.get('https://fakestoreapi.com/products/categories')
-        .then(function (response) {
-          if (self.categorias === null) {
-            self.categorias = response.data
-          } else {
-            self.categorias = self.categorias.concat(response.data)
-          }
-        })
-  },
+    try {
+      const response = await axios.get('https://fakestoreapi.com/products/categories')
+      this.categorias = this.categorias || response.data
+    } catch (error) {
+      console.log(error)
+    }
+  }
 }
 </script>
 
@@ -135,7 +183,7 @@ export default {
 }
 
 .itens-menu > li:hover:not(:last-child) {
-  border-bottom: solid 2px theme('colors.primary');
+  border-bottom: solid 4px theme('colors.primary');
 }
 
 
