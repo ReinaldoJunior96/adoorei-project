@@ -11,12 +11,12 @@ const routes = [
         component: Home
     },
     {
-        path: '/categorias',
+        path: '/categorias/:categoria',
         name: 'categoria',
         component: Categoria
     },
     {
-        path: '/produto',
+        path: '/produto/:produto',
         name: 'produto',
         component: Produto
     },
