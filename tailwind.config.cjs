@@ -11,7 +11,7 @@ module.exports = {
                 'secondary': '#1D2026',
             },
             screens: {
-                'phone': '360px',
+                'phone': '520px',
                 'tablet': '990px',
                 'laptop': '1024px',
             },

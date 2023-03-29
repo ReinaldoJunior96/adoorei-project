@@ -1,5 +1,5 @@
 <template>
-  <nav class=" shadow relative">
+  <nav class=" shadow relative ">
     <article class="py-5 px-3 tablet:px-0 bg-white ">
       <section class="flex justify-between tablet:justify-center gap-3 items-center  w-full">
         <div class="flex justify-center order-2 items-center gap-14">
@@ -8,7 +8,7 @@
             <h2 class="font-medium bebas-style texto-logo mt-2">Dev Store</h2>
           </div>
           <ul class="itens-menu hidden items-center tablet:flex gap-10 text-secondary font-medium">
-            <li class="cursor-pointer" v-for="c in this.categorias" :key="c">{{ c }}</li>
+            <li class="cursor-pointer" v-for="c in this.categoriasArr" :key="c">{{ c }}</li>
             <li class="hidden tablet:block">
               <div>
                 <label for="search"
@@ -33,7 +33,7 @@
           <i @click="menuMobile()" class="block tablet:hidden fa-solid fa-bars text-primary text-lg"></i>
         </div>
         <div class="order-3 ml-3">
-          <i class="fa-solid fa-cart-shopping text-primary text-lg"></i>
+          <i @click="verCarrinho()" class="fa-solid fa-cart-shopping text-primary text-lg cursor-pointer"></i>
         </div>
       </section>
       <section class="block tablet:hidden w-full ">
@@ -54,8 +54,7 @@
         </div>
       </section>
     </article>
-
-    <aside id="side-menu" class="side-menu h-screen w-9/12 top-0 bg-primary shadow bg-white absolute">
+    <aside id="sidemenu" class="sidemenu h-screen w-9/12 top-0 left-0 bg-primary fixed shadow fixed z-50">
       <div class="absolute -right-[10%]">
         <i @click="menuMobile" class="fa-solid fa-x text-lg pt-3 text-secondary"></i>
       </div>
@@ -67,6 +66,7 @@
           <a href="">
             {{ c }}
           </a>
+
 
         </li>
       </ul>
@@ -83,27 +83,45 @@ export default {
   name: 'navbar',
   data() {
     return {
-      categorias: []
-
+      categorias: null
     }
   },
   methods: {
     menuMobile() {
-      $('#side-menu').slideToggle("fast", function () {
-        $(this).animate({
-        }, 500);
+      //this.$store.commit('verCarrinho')
+      if (this.$store.state.visualizacaoCarrinho) {
+        this.$store.commit('verCarrinho')
+      }
+      $('#sidemenu').slideToggle("fast", function () {
+
+        $(this).animate({}, 500);
       })
     },
+    verCarrinho() {
+      const sideMenu = $('#sidemenu')
+      if (sideMenu.is(':visible')) {
+       sideMenu.hide()
+      }
+      this.$store.commit('verCarrinho')
+    }
+  },
+  computed: {
+    categoriasArr() {
+      return this.categorias
+    }
   },
   mounted() {
-    $('#side-menu').hide()
-    self = this
+    $('#sidemenu').hide()
+    const self = this
     axios.get('https://fakestoreapi.com/products/categories')
         .then(function (response) {
-          self.categorias = self.categorias.concat(response.data)
+          if (self.categorias === null) {
+            self.categorias = response.data
+          } else {
+            self.categorias = self.categorias.concat(response.data)
+          }
         })
-
-  }
+  },
 }
 </script>
 
@@ -116,16 +134,9 @@ export default {
   outline: none;
 }
 
-.itens-menu > li:hover:not(:last-child){
+.itens-menu > li:hover:not(:last-child) {
   border-bottom: solid 2px theme('colors.primary');
 }
-
-
-
-
-
-
-
 
 
 </style>
