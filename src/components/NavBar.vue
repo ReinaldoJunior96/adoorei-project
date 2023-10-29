@@ -1,5 +1,5 @@
 <template>
-  <nav class=" shadow z-10 relative relative ">
+  <nav class=" shadow z-10 relative ">
     <article class="py-5 px-3 tablet:px-0 bg-white " :class="{' brightness-50': this.$store.state.visualizacaoCarrinho }">
       <section class="flex justify-between tablet:justify-center gap-3 items-center  w-full">
         <div class="flex justify-center order-2 items-center gap-14">
@@ -14,7 +14,7 @@
           </router-link>
           <ul class="itens-menu hidden items-center tablet:flex gap-10 text-secondary font-medium">
             <li class="cursor-pointer text-gray-600" v-for="c in this.categoriasArr" :key="c">
-              <router-link :to="`/categorias/${c}`">{{ c }}</router-link>
+              <router-link :to="`/adorei/categorias/${c}`">{{ c }}</router-link>
             </li>
             <li class="hidden tablet:block">
               <div class="relative">
