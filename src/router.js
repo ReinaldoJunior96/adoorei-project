@@ -6,17 +6,17 @@ import Produto from "./views/Produto.vue";
 
 const routes = [
     {
-        path: '/',
+        path: '/adorei',
         name: 'home',
         component: Home
     },
     {
-        path: '/categorias/:categoria',
+        path: '/adorei/categorias/:categoria',
         name: 'categoria',
         component: Categoria
     },
     {
-        path: '/produto/:produto',
+        path: '/adorei/produto/:produto',
         name: 'produto',
         component: Produto
     },
@@ -24,6 +24,7 @@ const routes = [
 
 const router = createRouter({
     history: createWebHistory(),
+    mode: 'history',
     routes: routes
 })
 
