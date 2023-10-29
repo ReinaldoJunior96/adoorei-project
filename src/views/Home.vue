@@ -21,7 +21,7 @@
       <div v-else v-for="p in this.produtos.slice(0,qtdeListada)" :key="p" class="flex flex-col items-center w-[320px] bg-white shadow-2xl rounded-3xl relative">
         <div class="flex flex-col h-full p-5 gap-2  ">
           <div class="max-w-md mx-auto mb-3">
-            <router-link :to="`/produto/${p.id}`">
+            <router-link :to="`adorei/produto/${p.id}`">
               <img :src=p.image alt="Imagem"
                    class="w-full h-64 object-cover mx-auto block phone:h-32 tablet:h-48 laptop:h-36">
             </router-link>
